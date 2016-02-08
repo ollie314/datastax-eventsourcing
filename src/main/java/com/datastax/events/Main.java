@@ -39,7 +39,7 @@ public class Main {
 
 		for (int i = 0; i < noOfThreads; i++) {
 			
-			KillableRunner task = new TransactionWriter(service, queue);
+			KillableRunner task = new EventWriter(service, queue);
 			executor.execute(task);
 			tasks.add(task);
 		}					

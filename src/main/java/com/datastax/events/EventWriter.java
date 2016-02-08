@@ -8,22 +8,22 @@ import com.datastax.demo.utils.KillableRunner;
 import com.datastax.event.model.Event;
 import com.datastax.events.service.EventService;
 
-class TransactionWriter implements KillableRunner {
+class EventWriter implements KillableRunner {
 
 	private volatile boolean shutdown = false;
 	private EventService service;
 	private BlockingQueue<Event> queue;
 
-	public TransactionWriter(EventService service, BlockingQueue<Event> queue) {
+	public EventWriter(EventService service, BlockingQueue<Event> queue) {
 		this.service = service;
 		this.queue = queue;
 	}
 
 	@Override
 	public void run() {
-		Transaction transaction;
+		Event event;
 		while(!shutdown){				
-			Event event = queue.poll(); 
+			event = queue.poll(); 
 			
 			if (event!=null){
 				try {

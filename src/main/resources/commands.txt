@@ -1,1 +1,5 @@
-bin/dsetool create_core aib.transactions generateResources=true reindex=true coreOptions=rt.yaml
+case class Event (date: String, minute: Int, id: java.util.UUID, data: String, eventtype: String, aggregatetype: String, time: java.util.Date); 
+
+val events =  sc.cassandraTable[Event]("datastax", "eventsource").cache; 
+events.count
+

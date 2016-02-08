@@ -3,6 +3,8 @@ package com.datastax.events.webservice;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.List;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
 
 import javax.jws.WebService;
 import javax.ws.rs.GET;
@@ -18,6 +20,7 @@ import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.datastax.event.model.Event;
 import com.datastax.events.service.EventService;
 
 @WebService
@@ -47,8 +50,9 @@ public class EventWS {
 			logger.error(error);
 			return Response.status(Status.BAD_REQUEST).entity(error).build();
 		}
-				
-		List<Transaction> result = service.getEvents(from, to);
+		BlockingQueue<Event> queue = new ArrayBlockingQueue<Event>(10000);
+		
+		List<Event> result = service.getEvents(from, to);
 		
 		return Response.status(Status.OK).entity(result).build();
 	}
