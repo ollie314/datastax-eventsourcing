@@ -19,7 +19,7 @@ import com.datastax.event.model.Event;
 import com.datastax.events.service.EventService;
 
 public class ReadEvents {
-
+	
 	private static Logger logger = LoggerFactory.getLogger(ReadEvents.class);
 
 	public ReadEvents() {
@@ -34,8 +34,8 @@ public class ReadEvents {
 		EventReader eventReader = new EventReader(queue);
 		executor.execute(eventReader);
 		
-		DateTime from = DateTime.now().withDate(2015, 11, 4).withTime(12, 0, 0, 0);
-		DateTime to = DateTime.now().withDate(2015, 11, 6).withTime(12, 0, 0, 0);
+		DateTime from = DateTime.now().withDate(2015, 11, 1).withTime(12, 0, 0, 0);
+		DateTime to = DateTime.now().withDate(2015, 11, 1).withTime(19, 0, 0, 0);
 		
 		Timer timer = new Timer();
 		service.getEvents(queue, from, to, null);

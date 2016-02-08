@@ -15,7 +15,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import org.apache.zookeeper.Transaction;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,7 +27,7 @@ import com.datastax.events.service.EventService;
 public class EventWS {
 
 	private Logger logger = LoggerFactory.getLogger(EventWS.class);
-	private SimpleDateFormat inputDateFormat = new SimpleDateFormat("yyyyMMdd");
+	private SimpleDateFormat inputDateFormat = new SimpleDateFormat("yyyyMMdd-hhmmss");
 
 	//Service Layer.
 	private EventService service = new EventService();
@@ -36,7 +35,7 @@ public class EventWS {
 	@GET
 	@Path("/getevents/{from}/{to}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response getMovements(@PathParam("from") String fromDate, @PathParam("to") String toDate) {
+	public Response getEvents(@PathParam("from") String fromDate, @PathParam("to") String toDate) {
 		
 		DateTime from = DateTime.now();
 		DateTime to = DateTime.now();
@@ -50,8 +49,7 @@ public class EventWS {
 			logger.error(error);
 			return Response.status(Status.BAD_REQUEST).entity(error).build();
 		}
-		BlockingQueue<Event> queue = new ArrayBlockingQueue<Event>(10000);
-		
+
 		List<Event> result = service.getEvents(from, to);
 		
 		return Response.status(Status.OK).entity(result).build();

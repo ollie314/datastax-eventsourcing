@@ -4,11 +4,11 @@ use datastax;
 
 CREATE TABLE IF NOT EXISTS eventsource (
 date text,
-minute int,
+bucket int,
 id uuid, 
 aggregatetype text, 
 data text, 
 time timestamp, 
 eventtype text, 
-PRIMARY KEY((date, minute), time, id)
+PRIMARY KEY((date, bucket), time, id)
 );

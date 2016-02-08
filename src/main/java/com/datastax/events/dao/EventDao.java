@@ -1,7 +1,10 @@
 package com.datastax.events.dao;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
+import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -33,8 +36,8 @@ public class EventDao {
 
 	private static SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyyMMdd");
 
-	private static final String INSERT_INTO_EVENTS = "insert into " + eventTable + "(date, minute, id, aggregatetype, data, time, eventtype) values (?,?,?,?,?,?,?)";
-	private static final String SELECT_BY_DATE = "select date, minute, id, aggregatetype, data, time, eventtype from " + eventTable + " where date =? and minute = ?"; 
+	private static final String INSERT_INTO_EVENTS = "insert into " + eventTable + "(date, bucket, id, aggregatetype, data, time, eventtype) values (?,?,?,?,?,?,?)";
+	private static final String SELECT_BY_DATE = "select date, bucket, id, aggregatetype, data, time, eventtype from " + eventTable + " where date =? and bucket = ?"; 
 	
 	private PreparedStatement insertEvent;
 	private PreparedStatement selectByDate;
@@ -54,13 +57,12 @@ public class EventDao {
 	public void insertEvent(Event event) {
 		
 		DateTime dateTime = new DateTime(event.getTime());
-		dateTime.getMinuteOfDay();
 		
-		int minute = dateTime.getMinuteOfDay();
+		int bucket = EventDao.getBucket(dateTime);
 		String date = dateFormatter.format(dateTime.toDate());
 		
 		BoundStatement bs = new BoundStatement(this.insertEvent);
-		bs.bind(date, minute, event.getId(), event.getAggregateType(), event.getData(), event.getTime(), event.getEventtype());
+		bs.bind(date, bucket, event.getId(), event.getAggregateType(), event.getData(), event.getTime(), event.getEventtype());
 		
 		session.execute(bs);
 
@@ -70,19 +72,26 @@ public class EventDao {
 		}
 	}
 	
+	static public int getBucket(DateTime dateTime) {
+	
+		return dateTime.getSecondOfDay()/6;
+	}
+
 	public void getEventsForDate(BlockingQueue<Event> queue, DateTime time) {
 		this.getEventsForDate(queue, time, null);
 	}
 
 	public void getEventsForDate(BlockingQueue<Event> queue, DateTime time, String eventType) {
 		
-		int minute = time.getMinuteOfDay();
+		int minute = EventDao.getBucket(time);
 		String date = dateFormatter.format(time.toDate());
 
 		ResultSet resultSet = session.execute(selectByDate.bind(date, minute));
-		
+		//logger.info("Reading for " + date + " and " + minute);
 		Iterator<Row> iterator = resultSet.iterator();
+		
 		while (iterator.hasNext()){
+			
 			Row row = iterator.next();	
 			
 			try {
@@ -96,7 +105,7 @@ public class EventDao {
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
-		}
+		}	
 	}
 
 	private Event rowToEvent(Row row) {

@@ -10,7 +10,7 @@ import com.datastax.event.model.Event;
 
 public class EventGenerator {
 
-	private static DateTime date = new DateTime().minusDays(100).withTimeAtStartOfDay();
+	private static DateTime date = new DateTime().withDate(2015, 10, 31).withTimeAtStartOfDay();
 	private static List<String> eventTypes = Arrays.asList("INSERT", "DELETE", "LOGIN", "LOGOUT", "PREFERENCES", "CHANGE_OF_PASSWORD",
 			"LOG", "ERROR", "UNSUBSCRIBE", "SUBSCRIBE");
 	private static List<String> aggregateTypes = Arrays.asList("DAILY", "WEEKLY", "MONTHLY", "QUARTERLY", "YEARLY");
