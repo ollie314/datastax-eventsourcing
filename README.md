@@ -8,6 +8,8 @@ To use Spark you will need to provide your own Cassandra and Spark deployments. 
 First we start DSE in spark mode - 
 http://docs.datastax.com/en/datastax_enterprise/4.8/datastax_enterprise/startStop/refDseStartStopDse.html
 
+The implementation uses bucketing to group all data into particular time buckets for replay. The time bucket used in this example is 10 seconds but any time bucket can be used.   
+
 To create the schema, run the following
 
 	mvn clean compile exec:java -Dexec.mainClass="com.datastax.demo.SchemaSetup" -DcontactPoints=localhost
@@ -16,11 +18,15 @@ To create events, run the following (Default of 10 million events)
 	
 	mvn clean compile exec:java -Dexec.mainClass="com.datastax.events.Main"  -DcontactPoints=localhost -DnoOfEvents=10000000
 	
-To replay a sample event set 
+To replay a sample event set, run 
 
 	mvn clean compile exec:java -Dexec.mainClass="com.datastax.events.ReadEvents"  -DcontactPoints=localhost
-		
 	
+This replays 2 scenarios
+
+	1. Replay all events for a specified time range
+	2. Replay all events for a specified time range and a specific event type.		
+			
 To run the webservice
 
 	mvn jetty:run
