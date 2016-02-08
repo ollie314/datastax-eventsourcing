@@ -32,7 +32,7 @@ public class EventService {
 
 		while (time.isBefore(to)) {
 			dao.getEventsForDate(queue, time, eventType);
-			time = time.plusSeconds(6);
+			time = time.plusMinutes(1);
 		}
 	}
 
@@ -65,7 +65,7 @@ public class EventService {
 		while (time.isBefore(to)) {
 			dao.getEventsForDate(queue, time, eventType);
 
-			time = time.plusSeconds(1);
+			time = time.plusMinutes(1);
 		}
 
 		return events;

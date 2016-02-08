@@ -55,4 +55,4 @@ public class EventWS {
 		return Response.status(Status.OK).entity(result).build();
 	}
 	
-}
+}	

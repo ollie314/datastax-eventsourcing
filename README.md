@@ -8,7 +8,7 @@ To use Spark you will need to provide your own Cassandra and Spark deployments. 
 First we start DSE in spark mode - 
 http://docs.datastax.com/en/datastax_enterprise/4.8/datastax_enterprise/startStop/refDseStartStopDse.html
 
-The implementation uses bucketing to group all data into particular time buckets for replay. The time bucket used in this example is 10 seconds but any time bucket can be used.   
+The implementation uses bucketing to group all data into particular time buckets for replay. The time bucket used in this example is 1 minute but any time bucket can be used.   
 
 To create the schema, run the following
 

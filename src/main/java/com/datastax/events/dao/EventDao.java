@@ -74,7 +74,7 @@ public class EventDao {
 	
 	static public int getBucket(DateTime dateTime) {
 	
-		return dateTime.getSecondOfDay()/6;
+		return dateTime.getMinuteOfDay();
 	}
 
 	public void getEventsForDate(BlockingQueue<Event> queue, DateTime time) {
@@ -87,7 +87,7 @@ public class EventDao {
 		String date = dateFormatter.format(time.toDate());
 
 		ResultSet resultSet = session.execute(selectByDate.bind(date, minute));
-		//logger.info("Reading for " + date + " and " + minute);
+		logger.info("Reading for " + date + " and " + minute);
 		Iterator<Row> iterator = resultSet.iterator();
 		
 		while (iterator.hasNext()){
