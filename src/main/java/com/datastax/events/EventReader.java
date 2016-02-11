@@ -3,15 +3,10 @@ package com.datastax.events;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.atomic.AtomicLong;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.datastax.demo.utils.KillableRunner;
 import com.datastax.event.model.Event;
 
 class EventReader implements KillableRunner {
-
-	private Logger logger = LoggerFactory.getLogger(EventReader.class);
 
 	private volatile boolean shutdown = false;
 	private BlockingQueue<Event> queue;
@@ -28,7 +23,6 @@ class EventReader implements KillableRunner {
 			event = queue.poll();
 			
 			if (event!=null){
-				//logger.info(event.getTime() + "-" + event.getEventtype() + "-" + event.getData());
 				counter.incrementAndGet();
 			}
 		}

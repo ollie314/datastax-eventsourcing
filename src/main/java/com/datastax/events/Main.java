@@ -7,6 +7,7 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,6 +26,7 @@ public class Main {
 	public Main() {
 
 		String noOfEventsStr = PropertyHelper.getProperty("noOfEvents", "10000000");
+		int noOfDays = Integer.parseInt(PropertyHelper.getProperty("noOfDays", "5"));
 
 		BlockingQueue<Event> queue = new ArrayBlockingQueue<Event>(100);
 		List<KillableRunner> tasks = new ArrayList<>();
@@ -44,28 +46,20 @@ public class Main {
 			tasks.add(task);
 		}					
 		
+		EventGenerator.date = new DateTime().minusDays(noOfDays).withTimeAtStartOfDay();
 		Timer timer = new Timer();
 		for (int i = 0; i < noOfEvents; i++) {
 			
 			try{
-				queue.put(EventGenerator.createRandomEvent(noOfEvents));
+				queue.put(EventGenerator.createRandomEvent(noOfEvents, noOfDays));
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
 		}
 		timer.end();		
 		ThreadUtils.shutdown(tasks, executor);
-		
-		
+			
 		System.exit(0);
-	}
-
-	private void sleep(int i) {
-		try {
-			Thread.sleep(i);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}		
 	}
 
 	/**

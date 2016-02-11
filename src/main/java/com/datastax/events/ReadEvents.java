@@ -1,8 +1,6 @@
 package com.datastax.events;
 
-import java.time.Month;
-import java.util.ArrayList;
-import java.util.List;
+import java.text.ParseException;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
@@ -12,11 +10,11 @@ import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.datastax.demo.utils.KillableRunner;
 import com.datastax.demo.utils.PropertyHelper;
 import com.datastax.demo.utils.Timer;
 import com.datastax.event.model.Event;
 import com.datastax.events.service.EventService;
+import com.datastax.events.utils.DateUtils;
 
 public class ReadEvents {
 	
@@ -34,12 +32,19 @@ public class ReadEvents {
 		EventReader eventReader = new EventReader(queue);
 		executor.execute(eventReader);
 		
-		DateTime from = DateTime.now().withDate(2015, 11, 1).withTime(12, 0, 0, 0);
-		DateTime to = DateTime.now().withDate(2015, 11, 1).withTime(19, 0, 0, 0);
+		DateTime from = DateTime.now();
+		DateTime to = DateTime.now();
+		
+		try {
+			from = DateUtils.parseDate(PropertyHelper.getProperty("from","20160205-000000"));
+			to = DateUtils.parseDate(PropertyHelper.getProperty("to","20160206-000000"));
+		} catch (ParseException e) {
+			String error = "Caught exception parsing dates " + from + "-" + to;			
+			logger.error(error);
+		}
 		
 		Timer timer = new Timer();
-		service.getEvents(queue, from, to, null);
-		
+		service.getEvents(queue, from, to, null);		
 		timer.end();			
 		
 		long count = eventReader.getCount();
@@ -48,12 +53,13 @@ public class ReadEvents {
 		
 		timer = new Timer();
 		
-		//Only get preferences
-		service.getEvents(queue, from, to, "PREFERENCES");
+		//Only get eventType PREFERENCES
+		String eventType = "PREFERENCES";
+		service.getEvents(queue, from, to, eventType);
 		
 		timer.end();			
 		long count1 = eventReader.getCount() - count;
-		logger.info("Time taken to read " + count1 + " events was " + timer.getTimeTakenSeconds() + " secs");
+		logger.info("Time taken to read " + count1 + " " + eventType + " events was " + timer.getTimeTakenSeconds() + " secs");
 		
 		System.exit(0);	
 	}

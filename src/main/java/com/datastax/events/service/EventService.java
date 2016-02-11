@@ -1,6 +1,5 @@
 package com.datastax.events.service;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
@@ -17,7 +16,6 @@ import com.datastax.events.dao.EventDao;
 public class EventService {
 
 	private EventDao dao;
-	private static SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyyMMdd");
 	private ExecutorService executor = Executors.newFixedThreadPool(4);
 
 	public EventService() {
@@ -69,7 +67,7 @@ public class EventService {
 		}
 
 		return events;
-	}
+	}	
 
 	public void insertEvent(Event event) {
 		dao.insertEvent(event);

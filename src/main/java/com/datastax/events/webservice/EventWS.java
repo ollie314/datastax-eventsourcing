@@ -1,10 +1,7 @@
 package com.datastax.events.webservice;
 
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.List;
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.BlockingQueue;
 
 import javax.jws.WebService;
 import javax.ws.rs.GET;
@@ -21,13 +18,14 @@ import org.slf4j.LoggerFactory;
 
 import com.datastax.event.model.Event;
 import com.datastax.events.service.EventService;
+import com.datastax.events.utils.DateUtils;
+import com.sun.tracing.dtrace.Attributes;
 
 @WebService
 @Path("/")
 public class EventWS {
 
 	private Logger logger = LoggerFactory.getLogger(EventWS.class);
-	private SimpleDateFormat inputDateFormat = new SimpleDateFormat("yyyyMMdd-hhmmss");
 
 	//Service Layer.
 	private EventService service = new EventService();
@@ -41,8 +39,8 @@ public class EventWS {
 		DateTime to = DateTime.now();
 		
 		try {
-			from = new DateTime(inputDateFormat.parse(fromDate));
-			to = new DateTime(inputDateFormat.parse(toDate));
+			from = DateUtils.parseDate(fromDate);
+			to = DateUtils.parseDate(toDate);
 		} catch (ParseException e) {
 			String error = "Caught exception parsing dates " + fromDate + "-" + toDate;
 			

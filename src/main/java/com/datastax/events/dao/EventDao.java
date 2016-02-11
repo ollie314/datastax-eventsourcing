@@ -1,10 +1,7 @@
 package com.datastax.events.dao;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Iterator;
-import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -46,12 +43,13 @@ public class EventDao {
 	public EventDao(String[] contactPoints) {
 
 		Cluster cluster = Cluster.builder().addContactPoints(contactPoints).build();
-
 		
 		this.session = cluster.connect();
 
 		this.insertEvent = session.prepare(INSERT_INTO_EVENTS);
 		this.selectByDate = session.prepare(SELECT_BY_DATE);
+		
+		logger.debug("EventDao created");
 	}
 
 	public void insertEvent(Event event) {
@@ -87,7 +85,7 @@ public class EventDao {
 		String date = dateFormatter.format(time.toDate());
 
 		ResultSet resultSet = session.execute(selectByDate.bind(date, minute));
-		logger.info("Reading for " + date + " and " + minute);
+		//logger.info("Reading for " + date + " and " + minute);
 		Iterator<Row> iterator = resultSet.iterator();
 		
 		while (iterator.hasNext()){

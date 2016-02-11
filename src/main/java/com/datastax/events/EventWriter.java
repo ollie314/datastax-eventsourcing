@@ -2,8 +2,6 @@ package com.datastax.events;
 
 import java.util.concurrent.BlockingQueue;
 
-import org.apache.zookeeper.Transaction;
-
 import com.datastax.demo.utils.KillableRunner;
 import com.datastax.event.model.Event;
 import com.datastax.events.service.EventService;
