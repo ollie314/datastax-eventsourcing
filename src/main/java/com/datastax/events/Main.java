@@ -25,8 +25,8 @@ public class Main {
 
 	public Main() {
 
-		String noOfEventsStr = PropertyHelper.getProperty("noOfEvents", "10000000");
-		int noOfDays = Integer.parseInt(PropertyHelper.getProperty("noOfDays", "5"));
+		String noOfEventsStr = PropertyHelper.getProperty("noOfEvents", "100000");
+		int noOfDays = Integer.parseInt(PropertyHelper.getProperty("noOfDays", "350"));
 
 		BlockingQueue<Event> queue = new ArrayBlockingQueue<Event>(100);
 		List<KillableRunner> tasks = new ArrayList<>();
@@ -48,7 +48,7 @@ public class Main {
 		
 		EventGenerator.date = new DateTime().minusDays(noOfDays).withTimeAtStartOfDay();
 		Timer timer = new Timer();
-		for (int i = 0; i < noOfEvents; i++) {
+		for (int i = 0; i < noOfEvents*noOfDays; i++) {
 			
 			try{
 				queue.put(EventGenerator.createRandomEvent(noOfEvents, noOfDays));
