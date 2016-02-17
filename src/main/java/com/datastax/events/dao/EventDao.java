@@ -15,7 +15,7 @@ import com.datastax.driver.core.PreparedStatement;
 import com.datastax.driver.core.ResultSet;
 import com.datastax.driver.core.Row;
 import com.datastax.driver.core.Session;
-import com.datastax.event.model.Event;
+import com.datastax.events.model.Event;
 
 /**
  * Inserts into 2 tables
@@ -31,9 +31,9 @@ public class EventDao {
 	private static String keyspaceName = "datastax";
 	private static String eventTable = keyspaceName + ".eventsource";
 
-	private static SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyyMMdd");
+	private static final SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyyMMdd");
 
-	private static final String INSERT_INTO_EVENTS = "insert into " + eventTable + "(date, bucket, id, aggregatetype, data, time, eventtype) values (?,?,?,?,?,?,?)";
+	private static final String INSERT_INTO_EVENTS = "insert into " + eventTable + "(date, bucket, id, aggregatetype, host, loglevel, data, time, eventtype) values (?,?,?,?,?,?,?,?,?)";
 	private static final String SELECT_BY_DATE = "select date, bucket, id, aggregatetype, data, time, eventtype from " + eventTable + " where date =? and bucket = ?"; 
 	
 	private PreparedStatement insertEvent;
@@ -55,12 +55,13 @@ public class EventDao {
 	public void insertEvent(Event event) {
 		
 		DateTime dateTime = new DateTime(event.getTime());
-		
+
 		int bucket = EventDao.getBucket(dateTime);
-		String date = dateFormatter.format(dateTime.toDate());
+		String date = formatDate(dateTime);
 		
 		BoundStatement bs = new BoundStatement(this.insertEvent);
-		bs.bind(date, bucket, event.getId(), event.getAggregateType(), event.getData(), event.getTime(), event.getEventtype());
+		bs.bind(date, bucket, event.getId(), event.getAggregateType(), event.getData(), event.getHost(), event.getLoglevel(), 
+				event.getTime(), event.getEventtype());
 		
 		session.execute(bs);
 
@@ -70,6 +71,11 @@ public class EventDao {
 		}
 	}
 	
+	//Date is not Thread safe
+	private synchronized String formatDate(DateTime dateTime) {
+		return dateFormatter.format(dateTime.toDate());
+	}
+
 	static public int getBucket(DateTime dateTime) {
 	
 		return dateTime.getMinuteOfDay();
@@ -85,6 +91,7 @@ public class EventDao {
 		String date = dateFormatter.format(time.toDate());
 
 		ResultSet resultSet = session.execute(selectByDate.bind(date, minute));
+		
 		//logger.info("Reading for " + date + " and " + minute);
 		Iterator<Row> iterator = resultSet.iterator();
 		
@@ -111,6 +118,8 @@ public class EventDao {
 		Event event = new Event();
 		event.setAggregateType(row.getString("aggregatetype"));
 		event.setData(row.getString("data"));
+		event.setHost(row.getString("host"));
+		event.setLoglevel(row.getString("loglevel"));		
 		event.setEventtype(row.getString("eventtype"));
 		event.setTime(row.getDate("time"));
 		event.setId(row.getUUID("id"));

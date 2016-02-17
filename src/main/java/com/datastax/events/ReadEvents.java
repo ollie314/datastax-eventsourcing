@@ -12,7 +12,7 @@ import org.slf4j.LoggerFactory;
 
 import com.datastax.demo.utils.PropertyHelper;
 import com.datastax.demo.utils.Timer;
-import com.datastax.event.model.Event;
+import com.datastax.events.model.Event;
 import com.datastax.events.service.EventService;
 import com.datastax.events.utils.DateUtils;
 

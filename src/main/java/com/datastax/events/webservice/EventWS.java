@@ -16,10 +16,9 @@ import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.datastax.event.model.Event;
+import com.datastax.events.model.Event;
 import com.datastax.events.service.EventService;
 import com.datastax.events.utils.DateUtils;
-import com.sun.tracing.dtrace.Attributes;
 
 @WebService
 @Path("/")

@@ -1,4 +1,4 @@
-package com.datastax.event.model;
+package com.datastax.events.model;
 
 import java.util.Date;
 import java.util.UUID;
@@ -7,6 +7,8 @@ public class Event {
 	
 	private UUID id; 
 	private String aggregateType; 
+	private String host; 
+	private String loglevel; 	
 	private String data; 
 	private Date time; 
 	private String eventtype;
@@ -39,5 +41,17 @@ public class Event {
 	}
 	public void setEventtype(String eventtype) {
 		this.eventtype = eventtype;
+	}
+	public String getLoglevel() {
+		return loglevel;
+	}
+	public void setLoglevel(String loglevel) {
+		this.loglevel = loglevel;
+	}
+	public String getHost() {
+		return host;
+	}
+	public void setHost(String host) {
+		this.host = host;
 	}
 }

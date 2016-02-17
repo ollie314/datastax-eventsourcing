@@ -7,7 +7,6 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -15,8 +14,8 @@ import com.datastax.demo.utils.KillableRunner;
 import com.datastax.demo.utils.PropertyHelper;
 import com.datastax.demo.utils.ThreadUtils;
 import com.datastax.demo.utils.Timer;
-import com.datastax.event.model.Event;
 import com.datastax.events.data.EventGenerator;
+import com.datastax.events.model.Event;
 import com.datastax.events.service.EventService;
 
 public class Main {
@@ -37,7 +36,9 @@ public class Main {
 		EventService service = new EventService();
 		
 		int noOfEvents = Integer.parseInt(noOfEventsStr);
-		logger.info("Writing " + noOfEventsStr + " events");
+		
+		int totalEvents = noOfEvents*noOfDays;
+		logger.info("Writing " + totalEvents + " events");
 
 		for (int i = 0; i < noOfThreads; i++) {
 			
@@ -46,20 +47,36 @@ public class Main {
 			tasks.add(task);
 		}					
 		
-		EventGenerator.date = new DateTime().minusDays(noOfDays).withTimeAtStartOfDay();
 		Timer timer = new Timer();
-		for (int i = 0; i < noOfEvents*noOfDays; i++) {
+		for (int i = 0; i < totalEvents; i++) {
 			
 			try{
 				queue.put(EventGenerator.createRandomEvent(noOfEvents, noOfDays));
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
+		}	
+		timer.end();
+		while(true){
+			try{
+				queue.put(EventGenerator.createRandomEventNow());
+				sleep(10);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+				break;
+			}
 		}
-		timer.end();		
 		ThreadUtils.shutdown(tasks, executor);
 			
 		System.exit(0);
+	}
+
+	private void sleep(int i) {
+		try {
+			Thread.sleep(i);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 	}
 
 	/**

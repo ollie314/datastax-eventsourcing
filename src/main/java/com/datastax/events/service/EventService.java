@@ -10,8 +10,8 @@ import java.util.concurrent.Executors;
 import org.joda.time.DateTime;
 
 import com.datastax.demo.utils.PropertyHelper;
-import com.datastax.event.model.Event;
 import com.datastax.events.dao.EventDao;
+import com.datastax.events.model.Event;
 
 public class EventService {
 

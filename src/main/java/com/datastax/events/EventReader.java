@@ -4,7 +4,7 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.atomic.AtomicLong;
 
 import com.datastax.demo.utils.KillableRunner;
-import com.datastax.event.model.Event;
+import com.datastax.events.model.Event;
 
 class EventReader implements KillableRunner {
 
