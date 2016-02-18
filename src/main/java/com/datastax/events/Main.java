@@ -21,12 +21,11 @@ import com.datastax.events.service.EventService;
 
 public class Main {
 
-	private static int SLEEP_TIME = 10;
 	private static Logger logger = LoggerFactory.getLogger(Main.class);
 
 	public Main() {
 
-		String noOfEventsStr = PropertyHelper.getProperty("noOfEvents", "10000000");
+		String noOfEventsStr = PropertyHelper.getProperty("noOfEvents", "100000");
 		int noOfDays = Integer.parseInt(PropertyHelper.getProperty("noOfDays", "32"));
 
 		BlockingQueue<Event> queue = new ArrayBlockingQueue<Event>(100);
@@ -54,6 +53,10 @@ public class Main {
 			
 			try{
 				queue.put(EventGenerator.createRandomEvent(noOfEvents, noOfDays));
+				
+				if (EventGenerator.eventCounter.get() % 100000 == 0){
+					sleep(1000);
+				}
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}

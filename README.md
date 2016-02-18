@@ -40,6 +40,11 @@ where the date format is 'yyyyMMdd-hhmmss' e.g. For all events from midnight to 
 
 	http://localhost:8080/datastax-eventsourcing/rest/getevents/20151101-000000/20151101-010000/
 
+We can also use cql to query using the Solr query from DSE Search
+
+Get all LOGIN Events from 9th Feb 2016 at 12:30 to 11th Feb 2016 at 12:30 
+
+	select * from datastax.eventsource where solr_query = '{"q":"eventtype:LOGIN", "fq": "time:[2016-02-09T12:30:00.000Z TO 2016-02-11T12:30:00.000Z]", "sort":"time desc"}' limit 10000;
 
 To use Spark, using DSE we can just 'dse spark' to use the repl.
 
@@ -79,6 +84,8 @@ val end = new java.util.Date(java.util.Calendar.getInstance().getTime().getTime(
 val filtered = events.filter(_.time.after(start)).filter(_.time.before(end)).cache;
 filtered.count
 ```
+
+
 
 To remove the tables and the schema, run the following.
 
