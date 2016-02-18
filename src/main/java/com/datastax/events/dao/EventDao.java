@@ -60,7 +60,7 @@ public class EventDao {
 		String date = formatDate(dateTime);
 		
 		BoundStatement bs = new BoundStatement(this.insertEvent);
-		bs.bind(date, bucket, event.getId(), event.getAggregateType(), event.getData(), event.getHost(), event.getLoglevel(), 
+		bs.bind(date, bucket, event.getId(), event.getAggregateType(), event.getHost(), event.getLoglevel(), event.getData(),
 				event.getTime(), event.getEventtype());
 		
 		session.execute(bs);

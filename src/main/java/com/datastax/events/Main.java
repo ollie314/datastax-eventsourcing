@@ -24,14 +24,14 @@ public class Main {
 
 	public Main() {
 
-		String noOfEventsStr = PropertyHelper.getProperty("noOfEvents", "100000");
-		int noOfDays = Integer.parseInt(PropertyHelper.getProperty("noOfDays", "350"));
+		String noOfEventsStr = PropertyHelper.getProperty("noOfEvents", "10000000");
+		int noOfDays = Integer.parseInt(PropertyHelper.getProperty("noOfDays", "32"));
 
 		BlockingQueue<Event> queue = new ArrayBlockingQueue<Event>(100);
 		List<KillableRunner> tasks = new ArrayList<>();
 		
 		//Executor for Threads
-		int noOfThreads = Integer.parseInt(PropertyHelper.getProperty("noOfThreads", "2"));
+		int noOfThreads = Integer.parseInt(PropertyHelper.getProperty("noOfThreads", "4"));
 		ExecutorService executor = Executors.newFixedThreadPool(noOfThreads);
 		EventService service = new EventService();
 		
