@@ -18,8 +18,6 @@ import com.datastax.driver.core.Session;
 import com.datastax.events.model.Event;
 
 /**
- * Inserts into 2 tables
- * 
  * @author patrickcallaghan
  *
  */
