@@ -5,7 +5,7 @@ This demo shows how Cassandra and DSE can be using to store and replay events.
 
 To use Spark you will need to provide your own Cassandra and Spark deployments. In this demo we will use DSE as they are already integrated.
 
-First we start DSE in spark mode - 
+First we start DSE in SearchAnalyics mode to allow us to use both Spark and DSE Search - 
 http://docs.datastax.com/en/datastax_enterprise/4.8/datastax_enterprise/startStop/refDseStartStopDse.html
 
 The implementation uses bucketing to group all data into particular time buckets for replay. The time bucket used in this example is 1 minute but any time bucket can be used. Also depending how many days, months, years of events that need to be kept, it may be beneficial to spread the events over different tiers of tables.    
@@ -51,7 +51,8 @@ To use Spark, using DSE we can just 'dse spark' to use the repl.
 First we will create an Event object which will hold our events objects
 
 ```
-case class Event (date: String, bucket: Int, id: java.util.UUID, data: String, eventtype: String, aggregatetype: String, time: java.util.Date); 
+case class Event (date: String, bucket: Int, id: java.util.UUID, data: String, eventtype: String, 
+aggregatetype: String, time: java.util.Date, loglevel: String, host: String); 
 
 val events =  sc.cassandraTable[Event]("datastax", "eventsource").cache; 
 events.count
