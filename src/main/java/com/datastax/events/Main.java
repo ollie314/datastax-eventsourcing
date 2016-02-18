@@ -2,6 +2,7 @@ package com.datastax.events;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
@@ -20,6 +21,7 @@ import com.datastax.events.service.EventService;
 
 public class Main {
 
+	private static int SLEEP_TIME = 10;
 	private static Logger logger = LoggerFactory.getLogger(Main.class);
 
 	public Main() {
@@ -38,7 +40,7 @@ public class Main {
 		int noOfEvents = Integer.parseInt(noOfEventsStr);
 		
 		int totalEvents = noOfEvents*noOfDays;
-		logger.info("Writing " + totalEvents + " events");
+		logger.info("Writing " + totalEvents + " historic events");
 
 		for (int i = 0; i < noOfThreads; i++) {
 			
@@ -57,10 +59,31 @@ public class Main {
 			}
 		}	
 		timer.end();
+		
+		logger.info("Writing realtime events");
+		
+		Random r = new Random();
+		 
+		
 		while(true){
 			try{
 				queue.put(EventGenerator.createRandomEventNow());
-				sleep(10);
+				
+				sleep(new Double(Math.random()*15).intValue());
+				
+				double d = r.nextGaussian()*-1d;
+				//Create an random event
+				if (d*1000 < 1){
+					logger.info("Creating random events");
+					int someNumber = new Double(Math.random()*10000).intValue();
+					
+					for (int i=0; i < someNumber; i++){
+						queue.put(EventGenerator.createRandomEventNow());
+						
+						sleep(new Double(Math.random()*10).intValue());
+					}
+				}
+				
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 				break;
