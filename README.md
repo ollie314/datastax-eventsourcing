@@ -14,6 +14,10 @@ To create the schema, run the following
 
 	mvn clean compile exec:java -Dexec.mainClass="com.datastax.demo.SchemaSetup" -DcontactPoints=localhost
 	
+To create the solr core to make our table searchable, run the following
+
+	dsetool create_core datastax.eventsource generateResources=true
+	
 To create events, run the following (Default of 10 million events) 
 	
 	mvn clean compile exec:java -Dexec.mainClass="com.datastax.events.Main"  -DcontactPoints=localhost -DnoOfEvents=10000000
