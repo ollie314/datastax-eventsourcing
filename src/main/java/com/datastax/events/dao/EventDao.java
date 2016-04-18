@@ -32,7 +32,7 @@ public class EventDao {
 	private static final SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyyMMdd");
 
 	private static final String INSERT_INTO_EVENTS = "insert into " + eventTable + "(date, bucket, id, aggregatetype, host, loglevel, data, time, eventtype) values (?,?,?,?,?,?,?,?,?)";
-	private static final String SELECT_BY_DATE = "select date, bucket, id, host, aggregatetype, data, time, eventtype from " + eventTable + " where date =? and bucket = ?"; 
+	private static final String SELECT_BY_DATE = "select * from " + eventTable + " where date =? and bucket = ?"; 
 	
 	private PreparedStatement insertEvent;
 	private PreparedStatement selectByDate;
