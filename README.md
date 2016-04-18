@@ -90,6 +90,14 @@ val filtered = events.filter(_.time.after(start)).filter(_.time.before(end)).cac
 filtered.count
 ```
 
+Lets get all number of events per host and a list of all distinct hosts.
+```
+var hostCounts =  events.map(f => (f.host, 1)).reduceByKey(_ + _)
+hostCounts.collect().foreach(println)
+
+var hosts =  hostCounts.map(f => (f._1))
+hosts.collect().foreach(println)
+```
 
 
 To remove the tables and the schema, run the following.
