@@ -28,7 +28,7 @@ To replay a sample event set, run
 	
 eg
 
-	mvn clean compile exec:java -Dexec.mainClass="com.datastax.events.ReadEvents"  -DcontactPoints=localhost -Dfrom=20160205-000000 -Dto=20160205-010000
+	mvn clean compile exec:java -Dexec.mainClass="com.datastax.events.ReadEvents"  -DcontactPoints=localhost -Dfrom=20160805-000000 -Dto=20160805-010000
 	
 This replays 2 scenarios
 
@@ -40,15 +40,15 @@ To run the webservice
 	mvn jetty:run
 	
 To run a rest query, go the brower and enter a url in the format http://localhost:8080/datastax-eventsourcing/rest/getevents/from/to, 
-where the date format is 'yyyyMMdd-hhmmss' e.g. For all events from midnight to 1:00 am on the 1st of November 2015 run - 
+where the date format is 'yyyyMMdd-hhmmss' e.g. For all events from midnight to 1:00 am on the 1st of August 2016 run - 
 
-	http://localhost:8080/datastax-eventsourcing/rest/getevents/20151101-000000/20151101-010000/
+	http://localhost:8080/datastax-eventsourcing/rest/getevents/20160801-000000/20160801-010000/
 
 We can also use cql to query using the Solr query from DSE Search
 
-Get all LOGIN Events from 9th Feb 2016 at 12:30 to 11th Feb 2016 at 12:30 
+Get all LOGIN Events from 9th Aug 2016 at 12:30 to 11th Aug 2016 at 12:30 
 
-	select * from datastax.eventsource where solr_query = '{"q":"eventtype:LOGIN", "fq": "time:[2016-02-09T12:30:00.000Z TO 2016-02-11T12:30:00.000Z]", "sort":"time desc"}' limit 10000;
+	select * from datastax.eventsource where solr_query = '{"q":"eventtype:LOGIN", "fq": "time:[2016-08-09T12:30:00.000Z TO 2016-08-11T12:30:00.000Z]", "sort":"time desc"}' limit 10000;
 
 To use Spark, using DSE we can just 'dse spark' to use the repl.
 
