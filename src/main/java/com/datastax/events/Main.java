@@ -57,7 +57,6 @@ public class Main {
 				if (EventGenerator.eventCounter.get() % 10000 == 0){
 					logger.info("Created " + EventGenerator.eventCounter.get() +  "events");
 				}
-
 				
 				if (EventGenerator.eventCounter.get() % 100000 == 0){
 					sleep(1000);

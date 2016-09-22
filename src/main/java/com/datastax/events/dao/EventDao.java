@@ -15,6 +15,7 @@ import com.datastax.driver.core.PreparedStatement;
 import com.datastax.driver.core.ResultSet;
 import com.datastax.driver.core.Row;
 import com.datastax.driver.core.Session;
+import com.datastax.driver.core.policies.DCAwareRoundRobinPolicy;
 import com.datastax.events.model.Event;
 
 /**
@@ -40,13 +41,17 @@ public class EventDao {
 
 	public EventDao(String[] contactPoints) {
 
-		Cluster cluster = Cluster.builder().addContactPoints(contactPoints).build();
+		Cluster cluster = Cluster.builder().addContactPoints(contactPoints)
+				.withLoadBalancingPolicy(DCAwareRoundRobinPolicy.builder()
+						.withUsedHostsPerRemoteDc(3)
+						.allowRemoteDCsForLocalConsistencyLevel()
+						.build())
+				.build();
 		
 		this.session = cluster.connect();
 
 		this.insertEvent = session.prepare(INSERT_INTO_EVENTS);
 		this.selectByDate = session.prepare(SELECT_BY_DATE);
-		
 		logger.debug("EventDao created");
 	}
 
