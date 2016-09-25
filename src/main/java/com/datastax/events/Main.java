@@ -53,6 +53,10 @@ public class Main {
 			
 			try{
 				queue.put(EventGenerator.createRandomEvent(noOfEvents, noOfDays));
+
+				if (EventGenerator.eventCounter.get() % 10000 == 0){
+					logger.info("Created " + EventGenerator.eventCounter.get() +  "events");
+				}
 				
 				if (EventGenerator.eventCounter.get() % 100000 == 0){
 					sleep(1000);
@@ -76,14 +80,15 @@ public class Main {
 				
 				double d = r.nextGaussian()*-1d;
 				//Create an random event
+				
 				if (d*1000 < 1){
 					logger.info("Creating random events");
-					int someNumber = new Double(Math.random()*10000).intValue();
+					int someNumber = new Double(Math.random()*10).intValue();
 					
 					for (int i=0; i < someNumber; i++){
 						queue.put(EventGenerator.createRandomEventNow());
 						
-						sleep(new Double(Math.random()*10).intValue());
+						sleep(new Double(Math.random()*100).intValue());
 					}
 				}
 				

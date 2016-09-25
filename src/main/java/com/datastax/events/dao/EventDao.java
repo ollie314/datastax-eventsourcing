@@ -15,6 +15,7 @@ import com.datastax.driver.core.PreparedStatement;
 import com.datastax.driver.core.ResultSet;
 import com.datastax.driver.core.Row;
 import com.datastax.driver.core.Session;
+import com.datastax.driver.core.policies.DCAwareRoundRobinPolicy;
 import com.datastax.events.model.Event;
 
 /**
@@ -32,7 +33,7 @@ public class EventDao {
 	private static final SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyyMMdd");
 
 	private static final String INSERT_INTO_EVENTS = "insert into " + eventTable + "(date, bucket, id, aggregatetype, host, loglevel, data, time, eventtype) values (?,?,?,?,?,?,?,?,?)";
-	private static final String SELECT_BY_DATE = "select date, bucket, id, aggregatetype, data, time, eventtype from " + eventTable + " where date =? and bucket = ?"; 
+	private static final String SELECT_BY_DATE = "select * from " + eventTable + " where date =? and bucket = ?"; 
 	
 	private PreparedStatement insertEvent;
 	private PreparedStatement selectByDate;
@@ -40,13 +41,17 @@ public class EventDao {
 
 	public EventDao(String[] contactPoints) {
 
-		Cluster cluster = Cluster.builder().addContactPoints(contactPoints).build();
+		Cluster cluster = Cluster.builder().addContactPoints(contactPoints)
+				.withLoadBalancingPolicy(DCAwareRoundRobinPolicy.builder()
+						.withUsedHostsPerRemoteDc(3)
+						.allowRemoteDCsForLocalConsistencyLevel()
+						.build())
+				.build();
 		
 		this.session = cluster.connect();
 
 		this.insertEvent = session.prepare(INSERT_INTO_EVENTS);
 		this.selectByDate = session.prepare(SELECT_BY_DATE);
-		
 		logger.debug("EventDao created");
 	}
 
@@ -119,7 +124,7 @@ public class EventDao {
 		event.setHost(row.getString("host"));
 		event.setLoglevel(row.getString("loglevel"));		
 		event.setEventtype(row.getString("eventtype"));
-		event.setTime(row.getDate("time"));
+		event.setTime(row.getTimestamp("time"));
 		event.setId(row.getUUID("id"));
 		return event;
 	}	
